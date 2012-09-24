@@ -14,7 +14,7 @@ set formatoptions=lmoq           " テキスト整形オプション，マルチ
 set vb t_vb=                     " ビープをならさない
 set showcmd                      " コマンドをステータス行に表示
 set showmode                     " 現在のモードを表示
-set clipboard+=unnamed		 " OSのクリップボードを使用する
+set clipboard+=unnamed		     " OSのクリップボードを使用する
 
 " ---------------------------------------
 " syntax color
@@ -104,6 +104,7 @@ NeoBundle 'Shougo/neobundle.vim'
 NeoBundle 'Shougo/vimproc'
 NeoBundle 'Shougo/vimshell'
 NeoBundle 'Shougo/unite.vim'
+NeoBundle 'tsukkee/unite-tag.git'
 " 補完 neocomplcache.vim : 究極のVim的補完環境
 NeoBundle 'Shougo/neocomplcache'
 " neocomplcacheのsinpet補完
@@ -117,6 +118,7 @@ NeoBundle 'DumbBuf'
 NeoBundle 'minibufexpl.vim'
 " NERDTree : ツリー型エクスプローラ
 NeoBundle 'The-NERD-tree'
+NeoBundle 'nginx.vim'
 
 " ファイル判定on
 filetype plugin indent on
@@ -141,6 +143,40 @@ function InsertTabWrapper()
     endif
 endfunction
 inoremap <tab> <c-r>=InsertTabWrapper()<cr>
+
+" path にヘッダーファイルのディレクトリを追加することで
+" neocomplcache が include 時に tag ファイルを作成してくれる
+set path+=$LIBSTDCPP
+set path+=$BOOST_LATEST_ROOT
+
+" neocomplcache が作成した tag ファイルのパスを tags に追加する
+function! s:TagsUpdate()
+    " include している tag ファイルが毎回同じとは限らないので毎回初期化
+    setlocal tags=
+    for filename in neocomplcache#sources#include_complete#get_include_files(bufnr('%'))
+        execute "setlocal tags+=".neocomplcache#cache#encode_name('tags_output', filename)
+    endfor
+endfunction
+
+command!
+    \ -nargs=? PopupTags
+    \ call <SID>TagsUpdate()
+    \ |Unite tag:<args>
+
+function! s:get_func_name(word)
+    let end = match(a:word, '<\|[\|(')
+    return end == -1 ? a:word : a:word[ : end-1 ]
+endfunction
+
+" カーソル下のワード(word)で絞り込み
+noremap <silent> g<C-]> :<C-u>execute "PopupTags ".expand('<cword>')<CR>
+
+" カーソル下のワード(WORD)で ( か < か [ までが現れるまでで絞り込み
+" 例)
+" boost::array<std::stirng... → boost::array で絞り込み
+noremap <silent> G<C-]> :<C-u>execute "PopupTags "
+    \.substitute(<SID>get_func_name(expand('<cWORD>')), '\:', '\\\:', "g")<CR>
+
 
 "------------------------------------
 " MiniBufExplorer
@@ -173,6 +209,11 @@ let dumbbuf_wrap_cursor = 0
 let dumbbuf_remove_marked_when_close = 1
 
 "------------------------------------
+" nginx.vim
+"------------------------------------
+au BufRead,BufNewFile /etc/nginx/* set ft=nginx
+
+"------------------------------------
 " unite.vim
 "------------------------------------
 " 入力モードで開始する
@@ -192,4 +233,6 @@ noremap <space>a :Unite UniteWithBufferDir -buffer-name=files buffer file_mru bo
 " ESCキーを2回押すと終了する
 au FileType unite nnoremap <silent> <buffer> <ESC><ESC> :q<CR>
 au FileType unite inoremap <silent> <buffer> <ESC><ESC> <ESC>:q<CR>
+
+noremap <silent> <C-]> :<C-u>Unite -immediately -no-start-insert tag:<C-r>=expand('<cword>')<CR><CR>
 
