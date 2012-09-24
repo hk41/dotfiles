@@ -5,7 +5,13 @@ export EDITOR=vim
 export LANG=ja_JP.UTF-8
 export LESSCHARSET=utf-8
 alias vi="vim"
+alias ll="ls -laF"
+alias ls="ls --color"
 
+# --------------------------
+# git
+# --------------------------
+alias gls='git log --graph --summary --stat'
 
 ## terminal configuration
 # http://journal.mycom.co.jp/column/zsh/009/index.html
@@ -32,13 +38,6 @@ cons25)
     ;;
 
 kterm*|xterm*)
-   # Terminal.app
-#    precmd() {
-#        echo -ne "\033]0;${USER}@${HOST%%.*}:${PWD}\007"
-#    }
-    # export LSCOLORS=exfxcxdxbxegedabagacad
-    # export LSCOLORS=gxfxcxdxbxegedabagacad
-    
     export CLICOLOR=true
     export LSCOLORS=ExFxCxDxBxegedabagacad
     export LS_COLORS='di=1;34:ln=35:so=32:pi=33:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30'
@@ -62,9 +61,9 @@ setopt auto_pushd
 # ディレクトリスタックに同じディレクトリを追加しないようになる
 setopt pushd_ignore_dups
 # コマンドのスペルチェックをする
-setopt correct
+#setopt correct
 # コマンドライン全てのスペルチェックをする
-setopt correct_all
+#setopt correct_all
 # 上書きリダイレクトの禁止
 setopt no_clobber
 # 補完候補リストを詰めて表示
@@ -82,7 +81,7 @@ setopt auto_param_slash
 # {a-c} を a b c に展開する機能を使えるようにする
 setopt brace_ccl
 # シンボリックリンクは実体を追うようになる
-#setopt chase_links
+setopt chase_links
 # 補完キー（Tab,  Ctrl+I) を連打するだけで順に補完候補を自動で補完する
 setopt auto_menu
 # sudoも補完の対象
@@ -96,10 +95,13 @@ setopt multios
 setopt noautoremoveslash
 # beepを鳴らさないようにする
 setopt nolistbeep
+setopt nobeep
 # Match without pattern
 # ex. > rm *~398
 # remove * without a file "398". For test, use "echo *~398"
 setopt extended_glob
+
+
 
 # --------------------------
 # キーバインド
@@ -111,8 +113,8 @@ setopt extended_glob
 #
 bindkey -v
 # ctrl-w, ctrl-bキーで単語移動
-# bindkey "^W" forward-word
-# bindkey "^B" backward-word
+bindkey "^W" forward-word
+bindkey "^B" backward-word
 bindkey '^R' history-incremental-search-backward
 bindkey '^S' history-incremental-search-forward
 bindkey "^A" beginning-of-line
@@ -149,7 +151,7 @@ autoload -U colors; colors
 tmp_prompt="%{${fg[cyan]}%}%n%# %{${reset_color}%}"
 tmp_prompt2="%{${fg[cyan]}%}%_> %{${reset_color}%}"
 tmp_rprompt="%{${fg[green]}%}[%~]%{${reset_color}%}"
-tmp_sprompt="%{${fg[yellow]}%}%r is correct? [Yes, No, Abort, Edit]:%{${reset_color}%}"
+#tmp_sprompt="%{${fg[yellow]}%}%r is correct? [Yes, No, Abort, Edit]:%{${reset_color}%}"
 
 # rootユーザ時(太字にし、アンダーバーをつける)
 if [ ${UID} -eq 0 ]; then
@@ -162,4 +164,4 @@ fi
 PROMPT=$tmp_prompt    # 通常のプロンプト
 PROMPT2=$tmp_prompt2  # セカンダリのプロンプト(コマンドが2行以上の時に表示される)
 RPROMPT=$tmp_rprompt  # 右側のプロンプト
-SPROMPT=$tmp_sprompt  # スペル訂正用プロンプト
+#SPROMPT=$tmp_sprompt  # スペル訂正用プロンプト
