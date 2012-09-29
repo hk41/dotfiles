@@ -119,6 +119,9 @@ NeoBundle 'minibufexpl.vim'
 " NERDTree : ツリー型エクスプローラ
 NeoBundle 'The-NERD-tree'
 NeoBundle 'nginx.vim'
+" syntax統合
+NeoBundle 'scrooloose/syntastic'
+
 
 " ファイル判定on
 filetype plugin indent on
