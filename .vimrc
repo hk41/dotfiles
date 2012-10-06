@@ -121,6 +121,7 @@ NeoBundle 'The-NERD-tree'
 NeoBundle 'nginx.vim'
 " syntax統合
 NeoBundle 'scrooloose/syntastic'
+NeoBundle 'kana/vim-submode'
 
 
 " ファイル判定on
@@ -239,3 +240,22 @@ au FileType unite inoremap <silent> <buffer> <ESC><ESC> <ESC>:q<CR>
 
 noremap <silent> <C-]> :<C-u>Unite -immediately -no-start-insert tag:<C-r>=expand('<cword>')<CR><CR>
 
+"------------------------------------
+" submode.vim
+"------------------------------------
+" submodeを利用してctrl+w+r h,j,k,lでリサイズモード escで抜ける
+function! s:resizeWindow()
+    call submode#enter_with('winsize', 'n', '', 'mws', '<Nop>')
+    call submode#leave_with('winsize', 'n', '', '<Esc>')
+
+    let curwin = winnr()
+    wincmd j | let target1 = winnr() | exe curwin "wincmd w"
+    wincmd l | let target2 = winnr() | exe curwin "wincmd w"
+
+    execute printf("call submode#map ('winsize', 'n', 'r', 'j', '<C-w>%s')", curwin == target1 ? "-" : "+")
+    execute printf("call submode#map ('winsize', 'n', 'r', 'k', '<C-w>%s')", curwin == target1 ? "+" : "-")
+    execute printf("call submode#map ('winsize', 'n', 'r', 'h', '<C-w>%s')", curwin == target2 ? ">" : "<")
+    execute printf("call submode#map ('winsize', 'n', 'r', 'l', '<C-w>%s')", curwin == target2 ? "<" : ">")
+endfunction
+
+nmap <C-w>r :<C-u>call <SID>resizeWindow()<CR>mws
