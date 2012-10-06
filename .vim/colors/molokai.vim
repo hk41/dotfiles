@@ -1,1 +1,0 @@
-/home/hiroo/dotfiles/.vim/bundle/molokai/colors/molokai.vim
