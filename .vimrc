@@ -19,8 +19,9 @@ set clipboard+=unnamed		     " OSのクリップボードを使用する
 " ---------------------------------------
 " syntax color
 " ---------------------------------------
-syntax on 
-colorscheme molokai
+syntax on
+"colorscheme molokai
+colorscheme jellybeans
 
 " ターミナルタイプによるカラー設定
 if &term =~ "xterm-256color" || "screen-256color"
@@ -36,6 +37,12 @@ elseif &term =~ "xterm-color"
   set t_Sf=[3%dm
   set t_Sb=[4%dm
 endif
+
+" Twig
+au BufRead,BufNewFile *.twig set filetype=jinja
+au BufRead,BufNewFile *.html.twig set filetype=htmljinja
+" PHP
+"au BufRead,BufNewFile *.php set filetype=php
 
 "----------------------------------------
 " display
@@ -69,6 +76,27 @@ set whichwrap=b,s,h,l,<,>,[,]    " カーソルを行頭、行末で止まらな
 set backspace=indent,eol,start   " バックスペースでなんでも消せるように
 let loaded_matchparen = 1
 
+" submodeを利用してctrl+w+r h,j,k,lでリサイズモード escで抜ける
+function! s:resizeWindow()
+    call submode#enter_with('winsize', 'n', '', 'mws', '<Nop>')
+    call submode#leave_with('winsize', 'n', '', '<Esc>')
+
+    let curwin = winnr()
+    wincmd j | let target1 = winnr() | exe curwin "wincmd w"
+    wincmd l | let target2 = winnr() | exe curwin "wincmd w"
+
+    execute printf("call submode#map ('winsize', 'n', 'r', 'j', '<C-w>%s')", curwin == target1 ? "-" : "+")
+    execute printf("call submode#map ('winsize', 'n', 'r', 'k', '<C-w>%s')", curwin == target1 ? "+" : "-")
+    execute printf("call submode#map ('winsize', 'n', 'r', 'h', '<C-w>%s')", curwin == target2 ? ">" : "<")
+    execute printf("call submode#map ('winsize', 'n', 'r', 'l', '<C-w>%s')", curwin == target2 ? "<" : ">")
+endfunction
+
+nmap <C-w>r	:<C-u>call <SID>resizeWindow()<CR>mws
+
+
+ " 保存時に行末の空白を除去する
+ autocmd BufWritePre * :%s/\s\+$//e
+
 "----------------------------------------
 " tab
 "----------------------------------------
@@ -78,7 +106,8 @@ set softtabstop=4
 set shiftwidth=4
 set smarttab
 set shiftround
-set nowrap
+"set nowrap
+set wrap
 
 "----------------------------------------
 " search
@@ -108,8 +137,11 @@ NeoBundle 'tsukkee/unite-tag.git'
 " 補完 neocomplcache.vim : 究極のVim的補完環境
 NeoBundle 'Shougo/neocomplcache'
 " neocomplcacheのsinpet補完
-NeoBundle 'Shougo/neocomplcache-snippets-complete'
+"NeoBundle 'Shougo/neocomplcache-snippets-complete'
+NeoBundle 'Shougo/neosnippet'
 NeoBundle 'tomasr/molokai'
+NeoBundle 'nanotech/jellybeans.vim'
+NeoBundle 'fugalh/desert.vim'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'vim-scripts/gtags.vim'
 " DumbBuf.vim : quickbufっぽくbufferを管理。 "<Leader>b<Space>でBufferList
@@ -121,14 +153,23 @@ NeoBundle 'The-NERD-tree'
 NeoBundle 'nginx.vim'
 " syntax統合
 NeoBundle 'scrooloose/syntastic'
+NeoBundle 'motemen/git-vim'
+" Twigのシンタックスハイライト
+"NeoBundle 'beyondwords/vim-twig'
+NeoBundle 'ocim/htmljinja.vim'
+NeoBundle 'atourino/jinja.vim'
 NeoBundle 'kana/vim-submode'
-
+NeoBundle 'shawncplus/php.vim'
+" ショートカット実行
+NeoBundle 'thinca/vim-quickrun.git'
+" php折り畳み
+NeoBundle 'everzet/phpfolding.vim'
 
 " ファイル判定on
 filetype plugin indent on
 
 "----------------------------------------
-" neocomplcache有効 
+" neocomplcache有効
 "----------------------------------------
 let g:neocomplcache_enable_at_startup = 1
 
@@ -181,6 +222,22 @@ noremap <silent> g<C-]> :<C-u>execute "PopupTags ".expand('<cword>')<CR>
 noremap <silent> G<C-]> :<C-u>execute "PopupTags "
     \.substitute(<SID>get_func_name(expand('<cWORD>')), '\:', '\\\:', "g")<CR>
 
+
+"----------------------------------------
+" neosnippet
+"----------------------------------------
+" Plugin key-mappings.
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+
+" SuperTab like snippets behavior.
+imap <expr><TAB> neosnippet#expandable() ? "\<Plug>(neosnippet_expand_or_jump)" : pumvisible() ? "\<C-n>" : "\<TAB>"
+smap <expr><TAB> neosnippet#expandable() ? "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+
+" For snippet_complete marker.
+if has('conceal')
+  set conceallevel=2 concealcursor=i
+endif
 
 "------------------------------------
 " MiniBufExplorer
@@ -240,22 +297,19 @@ au FileType unite inoremap <silent> <buffer> <ESC><ESC> <ESC>:q<CR>
 
 noremap <silent> <C-]> :<C-u>Unite -immediately -no-start-insert tag:<C-r>=expand('<cword>')<CR><CR>
 
-"------------------------------------
-" submode.vim
-"------------------------------------
-" submodeを利用してctrl+w+r h,j,k,lでリサイズモード escで抜ける
-function! s:resizeWindow()
-    call submode#enter_with('winsize', 'n', '', 'mws', '<Nop>')
-    call submode#leave_with('winsize', 'n', '', '<Esc>')
+" --------------------------------
+" git-vim
+" --------------------------------
+noremap <Leader>gd: git diff
+noremap <Leader>gD: git diff --cached
+noremap <Leader>gs: git status
+noremap <Leader>gl: git log
+noremap <Leader>ga: git add
+noremap <Leader>gA: git add
+noremap <Leader>gc: git commit
+noremap <Leader>gp: git pull --rebase
 
-    let curwin = winnr()
-    wincmd j | let target1 = winnr() | exe curwin "wincmd w"
-    wincmd l | let target2 = winnr() | exe curwin "wincmd w"
-
-    execute printf("call submode#map ('winsize', 'n', 'r', 'j', '<C-w>%s')", curwin == target1 ? "-" : "+")
-    execute printf("call submode#map ('winsize', 'n', 'r', 'k', '<C-w>%s')", curwin == target1 ? "+" : "-")
-    execute printf("call submode#map ('winsize', 'n', 'r', 'h', '<C-w>%s')", curwin == target2 ? ">" : "<")
-    execute printf("call submode#map ('winsize', 'n', 'r', 'l', '<C-w>%s')", curwin == target2 ? "<" : ">")
-endfunction
-
-nmap <C-w>r :<C-u>call <SID>resizeWindow()<CR>mws
+" --------------------------------
+" 固有設定
+" --------------------------------
+" set tags=~/.tags "ctags
