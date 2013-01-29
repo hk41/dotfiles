@@ -1,6 +1,6 @@
-"----------------------------------------
+" ------------------------------
 " 一般
-"----------------------------------------
+" ------------------------------
 filetype off
 
 set nocompatible
@@ -43,15 +43,6 @@ au BufRead,BufNewFile *.twig set filetype=jinja
 au BufRead,BufNewFile *.html.twig set filetype=htmljinja
 " PHP
 "au BufRead,BufNewFile *.php set filetype=php
-
-
-" syntastic
-let g:syntastic_mode_map = {
-  \ 'mode': 'active',
-  \ 'active_filetypes': ['php', 'javascript', 'css'],
-  \ 'passive_filetypes': ['html'] }
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_javascript_checker = 'jshint'
 
 "----------------------------------------
 " display
@@ -183,7 +174,7 @@ filetype plugin indent on
 let g:neocomplcache_enable_at_startup = 1
 
 " tabで補完出来るように
-function InsertTabWrapper()
+function! InsertTabWrapper()
     if pumvisible()
         return "\<c-n>"
     endif
@@ -247,6 +238,27 @@ smap <expr><TAB> neosnippet#expandable() ? "\<Plug>(neosnippet_expand_or_jump)" 
 if has('conceal')
   set conceallevel=2 concealcursor=i
 endif
+
+
+"----------------------------------------
+" syntastic
+"----------------------------------------
+let g:syntastic_check_on_open=0 "ファイルを開いたときはチェックしない
+let g:syntastic_check_on_save=1 "保存時にはチェック
+let g:syntastic_auto_loc_list=1 "エラーがあったら自動でロケーションリストを開く
+let g:syntastic_loc_list_height=6 "エラー表示ウィンドウの高さ
+set statusline+=%#warningmsg# "エラーメッセージの書式
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+let g:syntastic_javascript_checker = 'jshint' "jshintを使う
+let g:syntastic_mode_map = {'mode': 'active',
+      \ 'active_filetypes': ['php', 'javascript'],
+      \ 'passive_filetypes': []
+      \ }
+"エラー表示マークを変更
+let g:syntastic_enable_signs=1
+let g:syntastic_error_symbol='✗'
+let g:syntastic_warning_symbol='⚠'
 
 "------------------------------------
 " MiniBufExplorer
