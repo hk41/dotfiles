@@ -165,6 +165,17 @@ NeoBundle 'thinca/vim-quickrun.git'
 " php折り畳み
 NeoBundle 'everzet/phpfolding.vim'
 
+
+NeoBundle 'mattn/zencoding-vim'
+"NeoBundle 'open-browser.vim'
+"NeoBundle 'mattn/webapi-vim'
+"NeoBundle 'tell-k/vim-browsereload-mac'
+"NeoBundle 'hail2u/vim-css3-syntax'
+"NeoBundle 'taichouchou2/html5.vim'
+"NeoBundle 'taichouchou2/vim-javascript' " jQuery syntax追加
+"NeoBundle 'kchmck/vim-coffee-script'
+
+
 " ファイル判定on
 filetype plugin indent on
 
