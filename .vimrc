@@ -38,11 +38,6 @@ elseif &term =~ "xterm-color"
   set t_Sb=[4%dm
 endif
 
-" Twig
-au BufRead,BufNewFile *.twig set filetype=jinja
-au BufRead,BufNewFile *.html.twig set filetype=htmljinja
-" PHP
-"au BufRead,BufNewFile *.php set filetype=php
 
 "----------------------------------------
 " display
@@ -170,9 +165,9 @@ NeoBundle 'mattn/zencoding-vim'
 "NeoBundle 'open-browser.vim'
 "NeoBundle 'mattn/webapi-vim'
 "NeoBundle 'tell-k/vim-browsereload-mac'
-"NeoBundle 'hail2u/vim-css3-syntax'
-"NeoBundle 'taichouchou2/html5.vim'
-"NeoBundle 'taichouchou2/vim-javascript' " jQuery syntax追加
+NeoBundle 'hail2u/vim-css3-syntax'
+NeoBundle 'taichouchou2/html5.vim'
+NeoBundle 'taichouchou2/vim-javascript'
 "NeoBundle 'kchmck/vim-coffee-script'
 
 
@@ -263,13 +258,35 @@ set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 let g:syntastic_javascript_checker = 'jshint' "jshintを使う
 let g:syntastic_mode_map = {'mode': 'active',
-      \ 'active_filetypes': ['php', 'javascript'],
+      \ 'active_filetypes': ['php', 'javascript', 'js'],
       \ 'passive_filetypes': []
       \ }
 "エラー表示マークを変更
 let g:syntastic_enable_signs=1
 let g:syntastic_error_symbol='✗'
 let g:syntastic_warning_symbol='⚠'
+
+" Twig
+au BufRead,BufNewFile *.twig set filetype=jinja
+au BufRead,BufNewFile *.html.twig set filetype=htmljinja
+" PHP
+
+
+"----------------------------------------
+" zencoding
+"----------------------------------------
+let g:user_zen_leader_key = '<C-Y>'
+" 言語別に対応させる
+let g:user_zen_settings = {
+      \  'lang' : 'ja',
+      \  'html' : {
+      \    'filters' : 'html',
+      \    'indentation' : ' '
+      \  },
+      \  'css' : {
+      \    'filters' : 'fc',
+      \  },
+      \}
 
 "------------------------------------
 " MiniBufExplorer
