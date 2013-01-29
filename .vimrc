@@ -44,6 +44,15 @@ au BufRead,BufNewFile *.html.twig set filetype=htmljinja
 " PHP
 "au BufRead,BufNewFile *.php set filetype=php
 
+
+" syntastic
+let g:syntastic_mode_map = {
+  \ 'mode': 'active',
+  \ 'active_filetypes': ['php', 'javascript', 'css'],
+  \ 'passive_filetypes': ['html'] }
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_javascript_checker = 'jshint'
+
 "----------------------------------------
 " display
 "----------------------------------------
