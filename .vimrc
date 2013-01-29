@@ -258,8 +258,8 @@ set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 let g:syntastic_javascript_checker = 'jshint' "jshintを使う
 let g:syntastic_mode_map = {'mode': 'active',
-      \ 'active_filetypes': ['php', 'javascript', 'js'],
-      \ 'passive_filetypes': []
+      \ 'active_filetypes': ['php', 'javascript', 'js', 'scss', 'css'],
+      \ 'passive_filetypes': ['html']
       \ }
 "エラー表示マークを変更
 let g:syntastic_enable_signs=1
