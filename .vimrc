@@ -162,7 +162,7 @@ NeoBundle 'everzet/phpfolding.vim'
 
 
 NeoBundle 'mattn/zencoding-vim'
-"NeoBundle 'open-browser.vim'
+NeoBundle 'open-browser.vim'
 "NeoBundle 'mattn/webapi-vim'
 "NeoBundle 'tell-k/vim-browsereload-mac'
 "NeoBundle 'hail2u/vim-css3-syntax'
@@ -358,6 +358,17 @@ noremap <Leader>ga: git add
 noremap <Leader>gA: git add
 noremap <Leader>gc: git commit
 noremap <Leader>gp: git pull --rebase
+
+
+" --------------------------------
+" open-browser
+" --------------------------------
+" カーソル下のURLをブラウザで開く
+nmap <Leader>o <Plug>(openbrowser-open)
+vmap <Leader>o <Plug>(openbrowser-open)
+" ググる
+nnoremap <Leader>g :<C-u>OpenBrowserSearch<Space><C-r><C-w><Enter>
+
 
 " --------------------------------
 " 固有設定
