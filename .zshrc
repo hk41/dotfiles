@@ -6,7 +6,8 @@ export LANG=ja_JP.UTF-8
 export LESSCHARSET=utf-8
 alias vi="vim"
 alias ll="ls -laF"
-alias ls="ls --color"
+#alias ls="ls --color"
+alias ls="ls -G"
 
 # --------------------------
 # git

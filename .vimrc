@@ -14,7 +14,7 @@ set formatoptions=lmoq           " テキスト整形オプション，マルチ
 set vb t_vb=                     " ビープをならさない
 set showcmd                      " コマンドをステータス行に表示
 set showmode                     " 現在のモードを表示
-set clipboard+=unnamed		     " OSのクリップボードを使用する
+set clipboard+=unnamed         " OSのクリップボードを使用する
 
 " ---------------------------------------
 " syntax color
@@ -42,15 +42,16 @@ endif
 "----------------------------------------
 " display
 "----------------------------------------
-"set statusline=%<%f\ %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']'}%=%l,%c%V%8P
+let &statusline = '%{cfi#format("[%s()] ", "[no function] ")}'
+set statusline+=%<%f\ %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']'}%=%l,%c%V%8P
 set scrolloff=10
 set laststatus=2
 set notitle
-set showmatch						" 括弧をハイライト
-set number						" 行番号表示
-"set list						" 不可視文字表示
-"set listchars=tab:>.,trail:_,extends:>,precedes:< 	" 不可視文字の表示形式
-"set display=uhex      					" 印字不可能文字を16進数で表示
+set showmatch            " 括弧をハイライト
+set number            " 行番号表示
+"set list            " 不可視文字表示
+"set listchars=tab:>.,trail:_,extends:>,precedes:<   " 不可視文字の表示形式
+"set display=uhex                " 印字不可能文字を16進数で表示
 " 全角スペースの表示
 highlight ZenkakuSpace cterm=underline ctermfg=lightblue guibg=darkgray
 match ZenkakuSpace /　/
@@ -86,16 +87,26 @@ function! s:resizeWindow()
     execute printf("call submode#map ('winsize', 'n', 'r', 'l', '<C-w>%s')", curwin == target2 ? "<" : ">")
 endfunction
 
-nmap <C-w>r	:<C-u>call <SID>resizeWindow()<CR>mws
+nmap <C-w>r  :<C-u>call <SID>resizeWindow()<CR>mws
+
+" 保存時に行末の空白を除去する
+"autocmd BufWritePre * :%s/\s\+$//e
+function! s:remove_dust()
+    let cursor = getpos(".")
+    " 保存時に行末の空白を除去する
+    %s/\s\+$//ge
+    " 保存時にtabを2スペースに変換する
+    "%s/\t/  /ge
+    call setpos(".", cursor)
+    unlet cursor
+endfunction
+"autocmd BufWritePre * call <SID>remove_dust()
 
 
- " 保存時に行末の空白を除去する
- autocmd BufWritePre * :%s/\s\+$//e
-
-"----------------------------------------
+"---------------------------------------s
 " tab
 "----------------------------------------
-set expandtab
+"set expandtab
 set tabstop=4
 set softtabstop=4
 set shiftwidth=4
@@ -159,7 +170,8 @@ NeoBundle 'shawncplus/php.vim'
 NeoBundle 'thinca/vim-quickrun.git'
 " php折り畳み
 NeoBundle 'everzet/phpfolding.vim'
-
+" 関数名
+NeoBundle 'tyru/current-func-info.vim.git'
 
 NeoBundle 'mattn/zencoding-vim'
 NeoBundle 'open-browser.vim'
@@ -371,6 +383,9 @@ nnoremap <Leader>g :<C-u>OpenBrowserSearch<Space><C-r><C-w><Enter>
 
 
 " --------------------------------
-" 固有設定
+" ctags
 " --------------------------------
-" set tags=~/.tags "ctags
+set tags=~/.tags
+" tをtmuxでbindしてるので別keyにあてる
+nnoremap <C-[> :pop<CR>
+

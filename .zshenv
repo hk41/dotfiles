@@ -12,3 +12,9 @@ if [[ -f ~/.nvm/nvm.sh ]]; then
     unset _nodejs_use_version
   fi
 fi
+
+# mac ports
+PATH=/opt/local/bin:/opt/local/sbin:$PATH
+MANPATH=/opt/local/man:$MANPATH
+
+
