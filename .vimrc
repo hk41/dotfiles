@@ -100,7 +100,7 @@ function! s:remove_dust()
     call setpos(".", cursor)
     unlet cursor
 endfunction
-"autocmd BufWritePre * call <SID>remove_dust()
+autocmd BufWritePre * call <SID>remove_dust()
 
 
 "---------------------------------------s
@@ -139,33 +139,35 @@ NeoBundle 'Shougo/neobundle.vim'
 NeoBundle 'Shougo/vimproc'
 NeoBundle 'Shougo/vimshell'
 NeoBundle 'Shougo/unite.vim'
-NeoBundle 'tsukkee/unite-tag.git'
+"NeoBundle 'tsukkee/unite-tag.git'
+NeoBundle 'Shougo/neomru.vim'
 " 補完 neocomplcache.vim : 究極のVim的補完環境
 NeoBundle 'Shougo/neocomplcache'
 " neocomplcacheのsinpet補完
 "NeoBundle 'Shougo/neocomplcache-snippets-complete'
-NeoBundle 'Shougo/neosnippet'
+NeoBundle 'Shougo/neosnippet.vim'
+NeoBundle "Shougo/neosnippet-snippets"
 NeoBundle 'tomasr/molokai'
 NeoBundle 'nanotech/jellybeans.vim'
 NeoBundle 'fugalh/desert.vim'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'vim-scripts/gtags.vim'
 " DumbBuf.vim : quickbufっぽくbufferを管理。 "<Leader>b<Space>でBufferList
-NeoBundle 'DumbBuf'
+"NeoBundle 'DumbBuf'
 " minibufexpl.vim : タブエディタ風にバッファ管理ウィンドウを表示
-NeoBundle 'minibufexpl.vim'
+" NeoBundle 'minibufexpl.vim'
 " NERDTree : ツリー型エクスプローラ
 NeoBundle 'The-NERD-tree'
-NeoBundle 'nginx.vim'
+" NeoBundle 'nginx.vim'
 " syntax統合
 NeoBundle 'scrooloose/syntastic'
 NeoBundle 'motemen/git-vim'
 " Twigのシンタックスハイライト
 "NeoBundle 'beyondwords/vim-twig'
-NeoBundle 'ocim/htmljinja.vim'
-NeoBundle 'atourino/jinja.vim'
-NeoBundle 'kana/vim-submode'
-NeoBundle 'shawncplus/php.vim'
+"NeoBundle 'ocim/htmljinja.vim'
+"NeoBundle 'atourino/jinja.vim'
+"NeoBundle 'kana/vim-submode'
+"NeoBundle 'shawncplus/php.vim'
 " ショートカット実行
 NeoBundle 'thinca/vim-quickrun.git'
 " php折り畳み
@@ -173,14 +175,14 @@ NeoBundle 'everzet/phpfolding.vim'
 " 関数名
 NeoBundle 'tyru/current-func-info.vim.git'
 
-NeoBundle 'mattn/zencoding-vim'
-NeoBundle 'open-browser.vim'
+"NeoBundle 'mattn/zencoding-vim'
+"NeoBundle 'open-browser.vim'
 "NeoBundle 'mattn/webapi-vim'
 "NeoBundle 'tell-k/vim-browsereload-mac'
 "NeoBundle 'hail2u/vim-css3-syntax'
-NeoBundle 'hokaccha/vim-css3-syntax'
-NeoBundle 'taichouchou2/html5.vim'
-NeoBundle 'taichouchou2/vim-javascript'
+"NeoBundle 'hokaccha/vim-css3-syntax'
+"NeoBundle 'taichouchou2/html5.vim'
+"NeoBundle 'taichouchou2/vim-javascript'
 "NeoBundle 'kchmck/vim-coffee-script'
 
 
@@ -270,6 +272,9 @@ set statusline+=%#warningmsg# "エラーメッセージの書式
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 let g:syntastic_javascript_checker = 'jshint' "jshintを使う
+" let g:syntastic_php_checkers=['php', 'phpcs', 'phpmd']
+let g:syntastic_php_checkers=['php', 'phpmd']
+let g:syntastic_php_phpmd_post_args='text unusedcode'
 let g:syntastic_mode_map = {'mode': 'active',
       \ 'active_filetypes': ['php', 'javascript', 'js', 'scss', 'css'],
       \ 'passive_filetypes': ['html']
@@ -280,26 +285,26 @@ let g:syntastic_error_symbol='✗'
 let g:syntastic_warning_symbol='⚠'
 
 " Twig
-au BufRead,BufNewFile *.twig set filetype=jinja
-au BufRead,BufNewFile *.html.twig set filetype=htmljinja
+"au BufRead,BufNewFile *.twig set filetype=jinja
+"au BufRead,BufNewFile *.html.twig set filetype=htmljinja
 " PHP
 
 
 "----------------------------------------
 " zencoding
 "----------------------------------------
-let g:user_zen_leader_key = '<C-Y>'
-" 言語別に対応させる
-let g:user_zen_settings = {
-      \  'lang' : 'ja',
-      \  'html' : {
-      \    'filters' : 'html',
-      \    'indentation' : ' '
-      \  },
-      \  'css' : {
-      \    'filters' : 'fc',
-      \  },
-      \}
+" let g:user_zen_leader_key = '<C-Y>'
+" " 言語別に対応させる
+" let g:user_zen_settings = {
+"       \  'lang' : 'ja',
+"       \  'html' : {
+"       \    'filters' : 'html',
+"       \    'indentation' : ' '
+"       \  },
+"       \  'css' : {
+"       \    'filters' : 'fc',
+"       \  },
+"       \}
 
 "------------------------------------
 " MiniBufExplorer
@@ -320,31 +325,31 @@ command! Mt :TMiniBufExplorer
 " DumbBuf.vim
 "------------------------------------
 "<Leader>b<Space>でBufferList
-let dumbbuf_hotkey = '<Leader>b<Space>'
-let dumbbuf_mappings = {
-    \ 'n': {
-        \'<Esc>': { 'opt': '<silent>', 'mapto': ':<C-u>close<CR>' }
-    \}
-\}
-let dumbbuf_single_key  = 1
-let dumbbuf_updatetime  = 1    " &updatetimeの最小値
-let dumbbuf_wrap_cursor = 0
-let dumbbuf_remove_marked_when_close = 1
-
-"------------------------------------
-" nginx.vim
-"------------------------------------
-au BufRead,BufNewFile /etc/nginx/* set ft=nginx
+"let dumbbuf_hotkey = '<Leader>b<Space>'
+"let dumbbuf_mappings = {
+"    \ 'n': {
+"        \'<Esc>': { 'opt': '<silent>', 'mapto': ':<C-u>close<CR>' }
+"    \}
+"\}
+"let dumbbuf_single_key  = 1
+"let dumbbuf_updatetime  = 1    " &updatetimeの最小値
+"let dumbbuf_wrap_cursor = 0
+"let dumbbuf_remove_marked_when_close = 1
 
 "------------------------------------
 " unite.vim
 "------------------------------------
 " 入力モードで開始する
 let g:unite_enable_start_insert=1
+" 大文字小文字を区別しない
+let g:unite_enable_ignore_case = 1
+let g:unite_enable_smart_case = 1
 " バッファ一覧
 noremap <space>b :Unite buffer<CR>
 " ファイル一覧
 noremap <space>f :UniteWithBufferDir -buffer-name=files file<CR>
+" ファイル一覧vimルート
+noremap <space>g :Unite -buffer-name=files file<CR>
 " 最近使ったファイルの一覧
 noremap <space>r :Unite file_mru<CR>
 " レジスタ一覧
@@ -358,6 +363,20 @@ au FileType unite nnoremap <silent> <buffer> <ESC><ESC> :q<CR>
 au FileType unite inoremap <silent> <buffer> <ESC><ESC> <ESC>:q<CR>
 
 noremap <silent> <C-]> :<C-u>Unite -immediately -no-start-insert tag:<C-r>=expand('<cword>')<CR><CR>
+
+" grep検索
+nnoremap <silent> ,g  :<C-u>Unite grep:. -buffer-name=search-buffer<CR>
+" カーソル位置の単語をgrep検索
+nnoremap <silent> ,cg :<C-u>Unite grep:. -buffer-name=search-buffer<CR><C-R><C-W>
+" grep検索結果の再呼出
+nnoremap <silent> ,r  :<C-u>UniteResume search-buffer<CR>
+" unite grep に ag(The Silver Searcher) を使う
+if executable('ag')
+  let g:unite_source_grep_command = 'ag'
+  let g:unite_source_grep_default_opts = '--nogroup --nocolor --column'
+  let g:unite_source_grep_recursive_opt = ''
+endif
+
 
 " --------------------------------
 " git-vim
@@ -373,19 +392,8 @@ noremap <Leader>gp: git pull --rebase
 
 
 " --------------------------------
-" open-browser
-" --------------------------------
-" カーソル下のURLをブラウザで開く
-nmap <Leader>o <Plug>(openbrowser-open)
-vmap <Leader>o <Plug>(openbrowser-open)
-" ググる
-nnoremap <Leader>g :<C-u>OpenBrowserSearch<Space><C-r><C-w><Enter>
-
-
-" --------------------------------
 " ctags
 " --------------------------------
 set tags=~/.tags
 " tをtmuxでbindしてるので別keyにあてる
 nnoremap <C-[> :pop<CR>
-

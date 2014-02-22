@@ -166,3 +166,25 @@ PROMPT=$tmp_prompt    # 通常のプロンプト
 PROMPT2=$tmp_prompt2  # セカンダリのプロンプト(コマンドが2行以上の時に表示される)
 RPROMPT=$tmp_rprompt  # 右側のプロンプト
 #SPROMPT=$tmp_sprompt  # スペル訂正用プロンプト
+
+# 固有設定
+function findDisenyPHP() {
+  find . -type f -name "*.php" | xargs grep -n "$1"
+  echo 'command: find . -type f -name "*.php" | xargs grep -n "'$1'"'
+}
+function findDisenyJs() {
+  find . -type f -name "*.js" | xargs grep -n "$1"
+  echo 'command: find . -type f -name "*.js" | xargs grep -n "'$1'"'
+}
+function findDisenyCss() {
+  find . -type f -name "*.css" | xargs grep -n "$1"
+  echo 'command: find . -type f -name "*.css" | xargs grep -n "'$1'"'
+}
+function findDisenyHtml() {
+  find . -type f -name "*.phtml" | xargs grep -n "$1"
+  echo 'command: find . -type f -name "*.pthml" | xargs grep -n "'$1'"'
+}
+alias fdp=findDisenyPHP
+alias fdj=findDisenyJs
+alias fdc=findDisenyCss
+alias fdh=findDisenyHtml
