@@ -188,3 +188,10 @@ alias fdp=findDisenyPHP
 alias fdj=findDisenyJs
 alias fdc=findDisenyCss
 alias fdh=findDisenyHtml
+
+# ruby env
+eval "$(rbenv init - zsh)"
+
+
+### Added by the Heroku Toolbelt
+export PATH="/usr/local/heroku/bin:$PATH"

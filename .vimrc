@@ -102,14 +102,17 @@ function! s:remove_dust()
 endfunction
 autocmd BufWritePre * call <SID>remove_dust()
 
+" 最後に編集した場所にカーソルを移動する
+autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+
 
 "---------------------------------------s
 " tab
 "----------------------------------------
 "set expandtab
-set tabstop=4
-set softtabstop=4
-set shiftwidth=4
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
 set smarttab
 set shiftround
 "set nowrap
@@ -147,6 +150,7 @@ NeoBundle 'Shougo/neocomplcache'
 "NeoBundle 'Shougo/neocomplcache-snippets-complete'
 NeoBundle 'Shougo/neosnippet.vim'
 NeoBundle "Shougo/neosnippet-snippets"
+"NeoBundle "Shougo/neocomplcache-rsense.vim"
 NeoBundle 'tomasr/molokai'
 NeoBundle 'nanotech/jellybeans.vim'
 NeoBundle 'fugalh/desert.vim'
@@ -155,7 +159,7 @@ NeoBundle 'vim-scripts/gtags.vim'
 " DumbBuf.vim : quickbufっぽくbufferを管理。 "<Leader>b<Space>でBufferList
 "NeoBundle 'DumbBuf'
 " minibufexpl.vim : タブエディタ風にバッファ管理ウィンドウを表示
-" NeoBundle 'minibufexpl.vim'
+NeoBundle 'minibufexpl.vim'
 " NERDTree : ツリー型エクスプローラ
 NeoBundle 'The-NERD-tree'
 " NeoBundle 'nginx.vim'
@@ -174,6 +178,8 @@ NeoBundle 'thinca/vim-quickrun.git'
 NeoBundle 'everzet/phpfolding.vim'
 " 関数名
 NeoBundle 'tyru/current-func-info.vim.git'
+"NeoBundle 'vim-ruby/vim-ruby'
+"NeoBundle 'tpope/vim-rails'
 
 "NeoBundle 'mattn/zencoding-vim'
 "NeoBundle 'open-browser.vim'
@@ -247,13 +253,25 @@ noremap <silent> G<C-]> :<C-u>execute "PopupTags "
 "----------------------------------------
 " neosnippet
 "----------------------------------------
+
+" snippetを保存するディレクトリを設定してください
+let s:default_snippet = '~/.vim/bundle/vim-snippets/snippets'
+let s:my_snippet = '~/.snippet' " 自分のsnippet
+let g:neosnippet#snippets_directory = s:my_snippet
+let g:neosnippet#snippets_directory = s:default_snippet . ',' . s:my_snippet
+
 " Plugin key-mappings.
 imap <C-k>     <Plug>(neosnippet_expand_or_jump)
 smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
 
 " SuperTab like snippets behavior.
-imap <expr><TAB> neosnippet#expandable() ? "\<Plug>(neosnippet_expand_or_jump)" : pumvisible() ? "\<C-n>" : "\<TAB>"
-smap <expr><TAB> neosnippet#expandable() ? "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+imap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)"
+\: pumvisible() ? "\<C-n>" : "\<TAB>"
+smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)"
+\: "\<TAB>"
 
 " For snippet_complete marker.
 if has('conceal')
@@ -272,7 +290,7 @@ set statusline+=%#warningmsg# "エラーメッセージの書式
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 let g:syntastic_javascript_checker = 'jshint' "jshintを使う
-" let g:syntastic_php_checkers=['php', 'phpcs', 'phpmd']
+"let g:syntastic_php_checkers=['php', 'phpcs', 'phpmd']
 let g:syntastic_php_checkers=['php', 'phpmd']
 let g:syntastic_php_phpmd_post_args='text unusedcode'
 let g:syntastic_mode_map = {'mode': 'active',
@@ -377,6 +395,29 @@ if executable('ag')
   let g:unite_source_grep_recursive_opt = ''
 endif
 
+"------------------------------------
+" Unite-rails.vim
+"------------------------------------
+"{{{
+function! UniteRailsSetting()
+  nnoremap <buffer><C-H><C-H><C-H>  :<C-U>Unite rails/view<CR>
+  nnoremap <buffer><C-H><C-H>       :<C-U>Unite rails/model<CR>
+  nnoremap <buffer><C-H>            :<C-U>Unite rails/controller<CR>
+
+  nnoremap <buffer><C-H>c           :<C-U>Unite rails/config<CR>
+  nnoremap <buffer><C-H>s           :<C-U>Unite rails/spec<CR>
+  nnoremap <buffer><C-H>m           :<C-U>Unite rails/db -input=migrate<CR>
+  nnoremap <buffer><C-H>l           :<C-U>Unite rails/lib<CR>
+  nnoremap <buffer><expr><C-H>g     ':e '.b:rails_root.'/Gemfile<CR>'
+  nnoremap <buffer><expr><C-H>r     ':e '.b:rails_root.'/config/routes.rb<CR>'
+  nnoremap <buffer><expr><C-H>se    ':e '.b:rails_root.'/db/seeds.rb<CR>'
+  nnoremap <buffer><C-H>ra          :<C-U>Unite rails/rake<CR>
+  nnoremap <buffer><C-H>h           :<C-U>Unite rails/heroku<CR>
+endfunction
+aug MyAutoCmd
+  au User Rails call UniteRailsSetting()
+aug END
+"}}}
 
 " --------------------------------
 " git-vim
@@ -397,3 +438,13 @@ noremap <Leader>gp: git pull --rebase
 set tags=~/.tags
 " tをtmuxでbindしてるので別keyにあてる
 nnoremap <C-[> :pop<CR>
+
+" --------------------------------
+" vim-ruby
+" --------------------------------
+" MyAutocmd FileType ruby,eruby setlocal omnifunc=rubycomplete#Complete
+" let g:rubycomplete_rails = 0
+" let g:rubycomplete_buffer_loading = 1
+" let g:rubycomplete_classes_in_global = 1
+" let g:rubycomplete_include_object = 1
+" let g:rubycomplete_include_object_space = 1
